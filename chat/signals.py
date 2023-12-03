@@ -10,7 +10,7 @@ from .serializers import MessageSerializer
 @receiver(post_save, sender=Message)
 def message_group_channels(sender, instance, **kwargs):
     """
-    Sends message instance to channels in the group
+    Sends created message instance to channels in the group
     or users in the room
     """
     channel_layer = channels.layers.get_channel_layer()

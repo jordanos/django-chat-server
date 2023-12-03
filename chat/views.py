@@ -52,7 +52,6 @@ class LeaveRoom(generics.UpdateAPIView):
 
 
 class MessageList(generics.ListCreateAPIView):
-    # filter_backends = [MessagesFilterBackend]
     filterset_fields = ["room"]
     parser_classes = [MultiPartParser]
     queryset = Message.objects.all().order_by("-created_at")

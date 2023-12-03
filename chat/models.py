@@ -3,7 +3,6 @@ from uuid import uuid4
 
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.db.models import Q
 
 from common.utils import get_mime_type
 
@@ -17,14 +16,6 @@ def upload(instance, filename):
     if len(types) > 1:
         file_type = types[0]
     return "/".join([f"{file_type}", f"{str(uuid4())}{os.path.splitext(filename)[1]}"])
-
-
-class RoomManager(models.Manager):
-    def by_user(self, **kwargs):
-        user = kwargs.get("user")
-        lookup = Q(first_person=user) | Q(second_person=user)
-        qs = self.get_queryset().filter(lookup).distinct()
-        return qs
 
 
 class Room(models.Model):
