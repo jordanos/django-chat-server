@@ -21,14 +21,15 @@ class RoomSerializer(serializers.ModelSerializer):
             "updated_at",
             "id",
             "owner",
-            "max_users",
             "users",
         ]
 
     def validate_max_users(self, value):
         max_u = settings.MAX_USERS_IN_ROOM
         if value > max_u:
-            raise serializers.ValidationError(f"Max users limit is {max_u}", code=400)
+            raise serializers.ValidationError(
+                f"System max users limit is {max_u}", code=400
+            )
         return value
 
     def create(self, validated_data):
@@ -37,11 +38,6 @@ class RoomSerializer(serializers.ModelSerializer):
         return obj
 
     def update(self, instance, validated_data):
-        # validate current users count with group user limit
-        if instance.users.count() > instance.max_users:
-            raise serializers.ValidationError(
-                f"Max users limit for this group is {instance.max_users}", code=400
-            )
         return super().update(instance, validated_data)
 
 
@@ -61,8 +57,13 @@ class JoinRoomSerializer(serializers.ModelSerializer):
         ]
 
     def update(self, instance, validated_data):
-        user = self.context["request"].user
+        # check for room users limit
         room = instance
+        if room.users.count() >= room.max_users:
+            raise serializers.ValidationError(
+                "Max users limit for group reached.", code=400
+            )
+        user = self.context["request"].user
         room.users.add(user)
         room.save()
         # add current user channel to group
