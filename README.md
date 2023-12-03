@@ -31,6 +31,8 @@ This channel instance is configured to subscribe to the user's associated rooms,
 
 Furthermore, upon termination of a WebSocket connection, the server initiates the unsubscription of the channel instance from the associated groups. This proactive measure is undertaken to optimize resource utilization and maintain system efficiency.
 
+- The system also supports the establishment of a global limit for users within groups or rooms. This functionality can be configured by accessing the `MAX_USERS_IN_ROOM` option within the designated directory path: config/settings.
+
 
 ## Quick Start
 
